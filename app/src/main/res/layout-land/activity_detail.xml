@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    tools:context="com.chelipinedaferrer.popularmovies.ui.DetailActivity">
+
+    <ImageView
+        android:id="@+id/movie_poster_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/movie_poster_picture_description"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/original_title"
+        style="@style/detailTextView"
+        android:textSize="@dimen/textview_title_textSize"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toEndOf="@id/movie_poster_thumbnail"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Coco" />
+
+    <TextView
+        android:id="@+id/release_date"
+        style="@style/detailTextView"
+        android:textSize="@dimen/textview_textSize"
+        app:layout_constraintStart_toStartOf="@id/original_title"
+        app:layout_constraintTop_toBottomOf="@id/original_title"
+        tools:text="2018-01-01" />
+
+    <TextView
+        android:id="@+id/vote_average"
+        style="@style/detailTextView"
+        android:textSize="@dimen/textview_vote_average_textSize"
+        app:layout_constraintStart_toStartOf="@id/release_date"
+        app:layout_constraintTop_toBottomOf="@id/release_date"
+        tools:text="4.6" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/vote_average"
+        app:layout_constraintTop_toBottomOf="@id/vote_average">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/overview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/textview_margin"
+                android:layout_marginTop="@dimen/textview_margin"
+                android:textSize="@dimen/textview_textSize"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Once upon a time..." />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

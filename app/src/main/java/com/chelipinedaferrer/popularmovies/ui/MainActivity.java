@@ -30,7 +30,10 @@ import com.chelipinedaferrer.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Movie[]>, SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Movie[]>,
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        MovieAdapter.MovieAdapterOnClickHandler {
+    public static final String EXTRA_MOVIE = "com.chelipinedaferrer.popularmovies.extra_movie";
     private static final int MOVIES_LOADER_ID = 11;
 
     private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        movieAdapter = new MovieAdapter();
+        movieAdapter = new MovieAdapter(this);
         recyclerView.setAdapter(movieAdapter);
 
         LoaderManager loaderManager = getSupportLoaderManager();
@@ -183,6 +186,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         PREFERENCES_HAVE_BEEN_UPDATED = true;
     }
 
+    @Override
+    public void onClick(Movie movie) {
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+        detailIntent.putExtra(EXTRA_MOVIE, movie);
+        startActivity(detailIntent);
+    }
+
+    /**
+     * Decorate the Items of th GridLayout with the same offset space.
+     */
     public class ItemOffsetDecoration extends RecyclerView.ItemDecoration {
         private int itemOffset;
 

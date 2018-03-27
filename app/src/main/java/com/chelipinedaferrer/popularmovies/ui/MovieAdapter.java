@@ -9,20 +9,23 @@ import android.widget.ImageView;
 
 import com.chelipinedaferrer.popularmovies.R;
 import com.chelipinedaferrer.popularmovies.entities.Movie;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
-
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+import com.chelipinedaferrer.popularmovies.lib.ImageLoader;
+import com.chelipinedaferrer.popularmovies.lib.PicassoImageLoader;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
     private Movie[] moviesData;
-    private final String MOVIE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
+
+    private final MovieAdapterOnClickHandler clickHandler;
+
+    public interface MovieAdapterOnClickHandler {
+        void onClick(Movie movie);
+    }
 
     /**
      * Creates a MovieAdapter.
-     *
      */
-    public MovieAdapter() {
+    public MovieAdapter(MovieAdapterOnClickHandler clickHandler) {
+        this.clickHandler = clickHandler;
     }
 
     @Override
@@ -40,18 +43,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
         Movie movie = moviesData[position];
 
-        final int radius = 10;
-        final int margin = 10;
-        final Transformation transformation = new RoundedCornersTransformation(radius, margin);
-        Picasso.get()
-                .load(MOVIE_POSTER_BASE_URL + movie.getPosterPath())
-                .transform(transformation)
-                .into(holder.moviePosterImage);
+        ImageLoader imageLoader = new PicassoImageLoader();
+        imageLoader.loadRoundedCornersPoster(holder.moviePosterImage, movie.getPosterPath());
     }
 
     @Override
     public int getItemCount() {
-        if (null == moviesData) return 0;
+        if (null == moviesData) {
+            return 0;
+        }
+
         return moviesData.length;
     }
 
@@ -70,7 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     /**
      * Cache of the children views for a movie list item.
      */
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final ImageView moviePosterImage;
 
@@ -78,6 +79,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             super(view);
 
             moviePosterImage = (ImageView) view.findViewById(R.id.movie_poster_image);
+
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            Movie movie = moviesData[adapterPosition];
+            clickHandler.onClick(movie);
+
         }
     }
 }

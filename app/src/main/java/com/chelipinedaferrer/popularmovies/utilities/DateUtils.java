@@ -24,7 +24,7 @@ public class DateUtils {
 
     public static String formatLocaleDate(@NonNull Date date) {
         if (date != null) {
-            DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault());
+            DateFormat formatter = DateFormat.getDateInstance(DateFormat.MEDIUM);
             return formatter.format(date);
         } else {
             return null;

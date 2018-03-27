@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Popular Movies</string>
 
+    <string name="action_settings">Settings</string>
     <string name="pref_sort_order_key" translatable="false">sort</string>
     <string name="pref_sort_order_label">Sort Order</string>
     <string name="pref_sort_order_label_popular">Most Popular</string>
@@ -9,9 +10,10 @@
     <string name="pref_sort_order_popular_value" translatable="false">popular</string>
     <string name="pref_sort_order_top_rate_value" translatable="false">top_rated</string>
 
-    <string name="popular_movies_api_key" translatable="false"></string>
-
-    <string name="action_settings">Settings</string>
     <string name="loading_error_message">An error has occurred while trying to load Popular Movies.</string>
     <string name="movie_poster_picture_description">Movie poster picture</string>
+
+    <string name="detail_activity_label">Movie Detail</string>
+
+    <string name="popular_movies_api_key" translatable="false"></string>
 </resources>
