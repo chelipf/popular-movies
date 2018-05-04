@@ -8,7 +8,7 @@ import com.squareup.picasso.Transformation;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class PicassoImageLoader implements ImageLoader {
-    private final String MOVIE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w185";
+    private final String MOVIE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
     private Picasso picassoInstance;
 
     public PicassoImageLoader() {
