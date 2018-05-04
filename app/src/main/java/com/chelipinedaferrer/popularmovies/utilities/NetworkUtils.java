@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.net.Uri.Builder;
 import android.util.Log;
 
+import com.chelipinedaferrer.popularmovies.BuildConfig;
 import com.chelipinedaferrer.popularmovies.R;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class NetworkUtils {
     public static URL buildUrl(Context context, String order) {
         final String POPULAR_MOVIES_PATH = context.getString(R.string.pref_sort_order_popular_value);
         final String TOP_RATED_MOVIES_PATH = context.getString(R.string.pref_sort_order_top_rate_value);
-        final String API_KEY = context.getString(R.string.popular_movies_api_key);
+        final String API_KEY = BuildConfig.POPULAR_MOVIES_API_KEY;
 
         Builder uriBuilder = Uri.parse(POPULAR_MOVIES_BASE_URL).buildUpon();
 

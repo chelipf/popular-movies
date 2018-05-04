@@ -14,6 +14,4 @@
     <string name="movie_poster_picture_description">Movie poster picture</string>
 
     <string name="detail_activity_label">Movie Detail</string>
-
-    <string name="popular_movies_api_key" translatable="false"></string>
 </resources>
