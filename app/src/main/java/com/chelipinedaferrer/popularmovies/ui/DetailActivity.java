@@ -15,14 +15,22 @@ import com.chelipinedaferrer.popularmovies.lib.ImageLoader;
 import com.chelipinedaferrer.popularmovies.lib.PicassoImageLoader;
 import com.chelipinedaferrer.popularmovies.utilities.DateUtils;
 
-import static com.chelipinedaferrer.popularmovies.ui.MainActivity.*;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static com.chelipinedaferrer.popularmovies.ui.MainActivity.EXTRA_MOVIE;
 
 public class DetailActivity extends AppCompatActivity {
-    private ImageView moviePosterThumbnail;
-    private TextView originalTitle;
-    private TextView releaseDate;
-    private TextView voteAverage;
-    private TextView overview;
+    @BindView(R.id.movie_poster_thumbnail)
+    ImageView moviePosterThumbnail;
+    @BindView(R.id.original_title)
+    TextView originalTitle;
+    @BindView(R.id.release_date)
+    TextView releaseDate;
+    @BindView(R.id.vote_average)
+    TextView voteAverage;
+    @BindView(R.id.overview)
+    TextView overview;
 
     private Movie movie;
 
@@ -30,12 +38,7 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
-        moviePosterThumbnail = findViewById(R.id.movie_poster_thumbnail);
-        originalTitle = findViewById(R.id.original_title);
-        releaseDate = findViewById(R.id.release_date);
-        voteAverage = findViewById(R.id.vote_average);
-        overview = findViewById(R.id.overview);
+        ButterKnife.bind(this);
 
         Intent intentThatStartedThisActivity = getIntent();
 

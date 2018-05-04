@@ -12,6 +12,9 @@ import com.chelipinedaferrer.popularmovies.entities.Movie;
 import com.chelipinedaferrer.popularmovies.lib.ImageLoader;
 import com.chelipinedaferrer.popularmovies.lib.PicassoImageLoader;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
     private Movie[] moviesData;
 
@@ -72,14 +75,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * Cache of the children views for a movie list item.
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        public final ImageView moviePosterImage;
+        @BindView(R.id.movie_poster_image)
+        ImageView moviePosterImage;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
 
-            moviePosterImage = (ImageView) view.findViewById(R.id.movie_poster_image);
-
+            ButterKnife.bind(this, view);
             view.setOnClickListener(this);
         }
 

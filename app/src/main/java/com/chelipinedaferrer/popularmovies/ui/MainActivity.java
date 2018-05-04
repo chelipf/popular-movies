@@ -3,10 +3,7 @@ package com.chelipinedaferrer.popularmovies.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.DimenRes;
-import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -31,6 +28,9 @@ import com.chelipinedaferrer.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
 
+import butterknife.ButterKnife;
+import butterknife.BindView;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Movie[]>,
         SharedPreferences.OnSharedPreferenceChangeListener,
         MovieAdapter.MovieAdapterOnClickHandler {
@@ -38,31 +38,29 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final int MOVIES_LOADER_ID = 11;
 
     private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
+    @BindView(R.id.recyclerview_movies)
+    RecyclerView recyclerviewMovies;
+    @BindView(R.id.loading_error_message)
+    TextView loadingErrorMessage;
+    @BindView(R.id.loading_indicator)
+    ProgressBar loadingIndicator;
 
     private MovieAdapter movieAdapter;
-
-    private RecyclerView recyclerView;
-    private TextView errorMessage;
-    private ProgressBar loadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
-        errorMessage = (TextView) findViewById(R.id.loading_error_message);
-        loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
-
+        ButterKnife.bind(this);
 
         int numOfColumns = 4;
         GridLayoutManager layoutManager = new GridAutofitLayoutManager(this, 250);
 
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
+        recyclerviewMovies.setLayoutManager(layoutManager);
+        recyclerviewMovies.setHasFixedSize(true);
 
         movieAdapter = new MovieAdapter(this);
-        recyclerView.setAdapter(movieAdapter);
+        recyclerviewMovies.setAdapter(movieAdapter);
 
         LoaderManager loaderManager = getSupportLoaderManager();
         loaderManager.initLoader(MOVIES_LOADER_ID, null, this);
@@ -150,13 +148,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void showMoviesDataView() {
-        errorMessage.setVisibility(View.INVISIBLE);
-        recyclerView.setVisibility(View.VISIBLE);
+        loadingErrorMessage.setVisibility(View.INVISIBLE);
+        recyclerviewMovies.setVisibility(View.VISIBLE);
     }
 
     private void showErrorMessage() {
-        recyclerView.setVisibility(View.INVISIBLE);
-        errorMessage.setVisibility(View.VISIBLE);
+        recyclerviewMovies.setVisibility(View.INVISIBLE);
+        loadingErrorMessage.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -195,27 +193,34 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static class GridAutofitLayoutManager extends GridLayoutManager {
         private int mColumnWidth;
         private boolean mColumnWidthChanged = true;
+
         public GridAutofitLayoutManager(Context context, int columnWidth) {
             super(context, 1);
             setColumnWidth(checkedColumnWidth(context, columnWidth));
         }
+
         public GridAutofitLayoutManager(Context context, int columnWidth, int orientation, boolean reverseLayout) { /* Initially set spanCount to 1, will be changed automatically later. */
             super(context, 1, orientation, reverseLayout);
             setColumnWidth(checkedColumnWidth(context, columnWidth));
         }
+
         private int checkedColumnWidth(Context context, int columnWidth) {
             if (columnWidth <= 0) { /* Set default columnWidth value (48dp here). It is better to move this constant to static constant on top, but we need context to convert it to dp, so can't really do so. */
                 columnWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, context.getResources().getDisplayMetrics());
             }
+
             return columnWidth;
         }
+
         public void setColumnWidth(int newColumnWidth) {
             if (newColumnWidth > 0 && newColumnWidth != mColumnWidth) {
                 mColumnWidth = newColumnWidth;
                 mColumnWidthChanged = true;
             }
         }
-        @Override public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+
+        @Override
+        public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
             if (mColumnWidthChanged && mColumnWidth > 0) {
                 int totalSpace;
                 if (getOrientation() == VERTICAL) {
@@ -223,10 +228,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 } else {
                     totalSpace = getHeight() - getPaddingTop() - getPaddingBottom();
                 }
+
                 int spanCount = Math.max(1, totalSpace / mColumnWidth);
                 setSpanCount(spanCount);
                 mColumnWidthChanged = false;
             }
+
             super.onLayoutChildren(recycler, state);
         }
     }
