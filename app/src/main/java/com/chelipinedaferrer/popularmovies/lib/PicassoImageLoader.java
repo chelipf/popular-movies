@@ -2,6 +2,7 @@ package com.chelipinedaferrer.popularmovies.lib;
 
 import android.widget.ImageView;
 
+import com.chelipinedaferrer.popularmovies.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -23,6 +24,8 @@ public class PicassoImageLoader implements ImageLoader {
 
         picassoInstance
                 .load(MOVIE_POSTER_BASE_URL + path)
+                .placeholder(R.drawable.ic_photo)
+                .error(R.drawable.ic_broken)
                 .transform(transformation)
                 .into(image);
     }
