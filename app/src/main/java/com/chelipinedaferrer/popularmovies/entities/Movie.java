@@ -6,13 +6,15 @@ import android.os.Parcelable;
 import java.util.Date;
 
 public class Movie implements Parcelable {
+    private String id;
     private String originalTitle;
     private String overview;
     private double voteAverage;
     private String posterPath;
     private Date releaseDate;
 
-    public Movie(String originalTitle, String overview, double voteAverage, String posterPath, Date releaseDate) {
+    public Movie(String id, String originalTitle, String overview, double voteAverage, String posterPath, Date releaseDate) {
+        this.id = id;
         this.originalTitle = originalTitle;
         this.overview = overview;
         this.voteAverage = voteAverage;
@@ -21,11 +23,16 @@ public class Movie implements Parcelable {
     }
 
     private Movie(Parcel in) {
+        this.id = in.readString();
         this.originalTitle = in.readString();
         this.overview = in.readString();
         this.voteAverage = in.readDouble();
         this.posterPath = in.readString();
         this.releaseDate = new Date(in.readLong());
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getOriginalTitle() {
@@ -55,6 +62,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
         parcel.writeString(originalTitle);
         parcel.writeString(overview);
         parcel.writeDouble(voteAverage);

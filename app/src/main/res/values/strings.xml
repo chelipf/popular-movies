@@ -12,6 +12,8 @@
 
     <string name="loading_error_message">An error has occurred while trying to load Popular Movies.</string>
     <string name="movie_poster_picture_description">Movie poster picture</string>
+    <string name="play_trailer_description">Play trailer picture</string>
+    <string name="loading_error_message_trailers">An error has occurred while trying to load the Trailers.</string>
 
     <string name="detail_activity_label">Movie Detail</string>
 </resources>

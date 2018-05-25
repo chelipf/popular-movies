@@ -60,11 +60,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     /**
-     * This method is used to set the movies on a MoviesAdapter if we've already
+     * This method is used to set the movies on a MovieAdapter if we've already
      * created one. This is handy when we get new data from the web but don't want to create a
      * new MovieAdapter to display it.
      *
-     * @param moviesData The new weather data to be displayed.
+     * @param moviesData The new movies data to be displayed.
      */
     public void setMoviesData(Movie[] moviesData) {
         this.moviesData = moviesData;

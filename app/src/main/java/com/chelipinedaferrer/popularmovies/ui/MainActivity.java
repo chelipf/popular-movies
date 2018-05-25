@@ -34,16 +34,17 @@ import butterknife.BindView;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Movie[]>,
         SharedPreferences.OnSharedPreferenceChangeListener,
         MovieAdapter.MovieAdapterOnClickHandler {
-    public static final String EXTRA_MOVIE = "com.chelipinedaferrer.popularmovies.extra_movie";
-    private static final int MOVIES_LOADER_ID = 11;
-
-    private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
     @BindView(R.id.recyclerview_movies)
     RecyclerView recyclerviewMovies;
     @BindView(R.id.loading_error_message)
     TextView loadingErrorMessage;
     @BindView(R.id.loading_indicator)
     ProgressBar loadingIndicator;
+
+    public static final String EXTRA_MOVIE = "com.chelipinedaferrer.popularmovies.extra_movie";
+    private static final int MOVIES_LOADER_ID = 11;
+
+    private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
 
     private MovieAdapter movieAdapter;
 
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
 
                 try {
-                    URL moviesURL = NetworkUtils.buildUrl(MainActivity.this, moviesOrder);
+                    URL moviesURL = NetworkUtils.buildMoviesUrl(MainActivity.this, moviesOrder);
                     String moviesJson = NetworkUtils.getResponseFromHttpUrl(moviesURL);
                     movies = JsonUtils.getMoviesFromJson(moviesJson);
                 } catch (Exception e) {

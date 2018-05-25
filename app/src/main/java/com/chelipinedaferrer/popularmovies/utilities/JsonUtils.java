@@ -1,6 +1,9 @@
 package com.chelipinedaferrer.popularmovies.utilities;
 
+import android.support.annotation.NonNull;
+
 import com.chelipinedaferrer.popularmovies.entities.Movie;
+import com.chelipinedaferrer.popularmovies.entities.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,8 +12,9 @@ import java.util.Date;
 
 public class JsonUtils {
 
-    public static Movie[] getMoviesFromJson(String jsonData) throws JSONException {
+    public static Movie[] getMoviesFromJson(@NonNull String jsonData) throws JSONException {
         final String RESULTS = "results";
+        final String ID = "id";
         final String ORIGINAL_TITLE = "original_title";
         final String OVERVIEW = "overview";
         final String VOTE_AVERAGE = "vote_average";
@@ -28,15 +32,41 @@ public class JsonUtils {
         for (int i = 0; i < resultsArrayJson.length(); i++) {
             JSONObject movieJson = resultsArrayJson.getJSONObject(i);
 
+            String id = movieJson.getString(ID);
             String originalTitle = movieJson.getString(ORIGINAL_TITLE);
             String overview = movieJson.getString(OVERVIEW);
             double voteAverage = movieJson.getDouble(VOTE_AVERAGE);
             String posterPath = movieJson.getString(POSTER_PATH);
             Date releaseDate = DateUtils.getDateFromString(movieJson.getString(RELEASE_DATE));
 
-            parsedMoviesData[i] = new Movie(originalTitle, overview, voteAverage, posterPath, releaseDate);
+            parsedMoviesData[i] = new Movie(id, originalTitle, overview, voteAverage, posterPath, releaseDate);
         }
 
         return parsedMoviesData;
+    }
+
+    public static Trailer[] getTrailersFromJson(@NonNull String jsonData) throws  JSONException {
+        final String RESULTS = "results";
+        final String NAME = "name";
+        final String KEY = "key";
+
+        Trailer[] parsedTrailersData = null;
+
+        JSONObject moviesJson = new JSONObject(jsonData);
+
+        JSONArray resultsArrayJson = moviesJson.getJSONArray(RESULTS);
+
+        parsedTrailersData = new Trailer[resultsArrayJson.length()];
+
+        for (int i = 0; i < resultsArrayJson.length(); i++) {
+            JSONObject trailerJson = resultsArrayJson.getJSONObject(i);
+
+            String name = trailerJson.getString(NAME);
+            String key = trailerJson.getString(KEY);
+
+            parsedTrailersData[i] = new Trailer(name, key);
+        }
+
+        return parsedTrailersData;
     }
 }
