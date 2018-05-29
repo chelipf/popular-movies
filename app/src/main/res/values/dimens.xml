@@ -3,8 +3,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="image_padding">4dp</dimen>
+    <dimen name="textview_padding">16dp</dimen>
     <dimen name="textview_margin">8dp</dimen>
     <dimen name="textview_textSize">16sp</dimen>
     <dimen name="textview_title_textSize">20sp</dimen>
     <dimen name="textview_vote_average_textSize">34sp</dimen>
+    <dimen name="progressbar">42dp</dimen>
 </resources>

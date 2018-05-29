@@ -28,8 +28,8 @@ import com.chelipinedaferrer.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
 
-import butterknife.ButterKnife;
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Movie[]>,
         SharedPreferences.OnSharedPreferenceChangeListener,

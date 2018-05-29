@@ -3,11 +3,13 @@ package com.chelipinedaferrer.popularmovies.utilities;
 import android.support.annotation.NonNull;
 
 import com.chelipinedaferrer.popularmovies.entities.Movie;
+import com.chelipinedaferrer.popularmovies.entities.Review;
 import com.chelipinedaferrer.popularmovies.entities.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Date;
 
 public class JsonUtils {
@@ -45,7 +47,7 @@ public class JsonUtils {
         return parsedMoviesData;
     }
 
-    public static Trailer[] getTrailersFromJson(@NonNull String jsonData) throws  JSONException {
+    public static Trailer[] getTrailersFromJson(@NonNull String jsonData) throws JSONException {
         final String RESULTS = "results";
         final String NAME = "name";
         final String KEY = "key";
@@ -68,5 +70,32 @@ public class JsonUtils {
         }
 
         return parsedTrailersData;
+    }
+
+    public static Review[] getReviewsFromJson(@NonNull String jsonData) throws JSONException {
+        final String RESULTS = "results";
+        final String AUTHOR = "author";
+        final String CONTENT = "content";
+        final String URL = "url";
+
+        Review[] parsedReviewsData = null;
+
+        JSONObject moviesJson = new JSONObject(jsonData);
+
+        JSONArray resultsArrayJson = moviesJson.getJSONArray(RESULTS);
+
+        parsedReviewsData = new Review[resultsArrayJson.length()];
+
+        for (int i = 0; i < resultsArrayJson.length(); i++) {
+            JSONObject reviewJson = resultsArrayJson.getJSONObject(i);
+
+            String author = reviewJson.getString(AUTHOR);
+            String content = reviewJson.getString(CONTENT);
+            String url = reviewJson.getString(URL);
+
+            parsedReviewsData[i] = new Review(author, content, url);
+        }
+
+        return parsedReviewsData;
     }
 }

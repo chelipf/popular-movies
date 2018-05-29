@@ -29,7 +29,7 @@ public class NetworkUtils {
      * Builds the Popular Movies URL used to talk to the popular movies server using a sort rule.
      *
      * @param context The context.
-     * @param order The sort order rule.
+     * @param order   The sort order rule.
      * @return The URL to use to query the popular movies server.
      */
     public static URL buildMoviesUrl(Context context, String order) {
@@ -50,14 +50,7 @@ public class NetworkUtils {
 
         Uri popularMoviesUri = uriBuilder.build();
 
-        try {
-            URL popularMoviesUrl = new URL(popularMoviesUri.toString());
-            Log.v(TAG, "URL: " + popularMoviesUrl);
-            return popularMoviesUrl;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return buildUrl(popularMoviesUri);
     }
 
     /**
@@ -77,10 +70,40 @@ public class NetworkUtils {
 
         Uri trailersUri = uriBuilder.build();
 
+        return buildUrl(trailersUri);
+    }
+
+    /**
+     * Builds the Reviews URL used to talk to the popular movies server using a movie id.
+     *
+     * @param id The movie id.
+     * @return The URL to use to query the popular movies server.
+     */
+    public static URL buildReviewsUrl(@NonNull String id) {
+        final String REVIEWS_PATH = "reviews";
+
+        Builder uriBuilder = Uri.parse(POPULAR_MOVIES_BASE_URL).buildUpon();
+
+        uriBuilder.appendPath(id);
+        uriBuilder.appendPath(REVIEWS_PATH);
+        uriBuilder.appendQueryParameter(API_KEY_PARAM, API_KEY);
+
+        Uri trailersUri = uriBuilder.build();
+
+        return buildUrl(trailersUri);
+    }
+
+    /**
+     * Builds the URL using a Uri.
+     *
+     * @param uri
+     * @return The URL to use to query the popular movies server.
+     */
+    public static URL buildUrl(Uri uri) {
         try {
-            URL trailersUrl = new URL(trailersUri.toString());
-            Log.v(TAG, "URL: " + trailersUrl);
-            return trailersUrl;
+            URL url = new URL(uri.toString());
+            Log.v(TAG, "URL: " + url);
+            return url;
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;

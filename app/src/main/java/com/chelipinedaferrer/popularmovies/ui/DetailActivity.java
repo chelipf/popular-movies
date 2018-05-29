@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.chelipinedaferrer.popularmovies.R;
 import com.chelipinedaferrer.popularmovies.entities.Movie;
+import com.chelipinedaferrer.popularmovies.entities.Review;
 import com.chelipinedaferrer.popularmovies.entities.Trailer;
 import com.chelipinedaferrer.popularmovies.lib.ImageLoader;
 import com.chelipinedaferrer.popularmovies.lib.PicassoImageLoader;
@@ -36,7 +37,7 @@ import butterknife.ButterKnife;
 
 import static com.chelipinedaferrer.popularmovies.ui.MainActivity.EXTRA_MOVIE;
 
-public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Trailer[]>, TrailerAdapter.TrailerAdapterOnClickHandler {
+public class DetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerAdapterOnClickHandler, ReviewAdapter.ReviewAdapterOnClickHandler {
     @BindView(R.id.movie_poster_thumbnail)
     ImageView moviePosterThumbnail;
     @BindView(R.id.original_title)
@@ -53,11 +54,19 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     TextView loadingErrorMessageTrailers;
     @BindView(R.id.loading_indicator_trailers)
     ProgressBar loadingIndicatorTrailers;
+    @BindView(R.id.recyclerview_reviews)
+    RecyclerView recyclerviewReviews;
+    @BindView(R.id.loading_error_message_reviews)
+    TextView loadingErrorMessageReviews;
+    @BindView(R.id.loading_indicator_reviews)
+    ProgressBar loadingIndicatorReviews;
 
     private static final int TRAILERS_LOADER_ID = 12;
+    private static final int REVIEWS_LOADER_ID = 13;
 
     private Movie movie;
     private TrailerAdapter trailerAdapter;
+    private ReviewAdapter reviewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,15 +95,157 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerviewTrailers.setLayoutManager(layoutManager);
+        LinearLayoutManager layoutManagerTrailers = new LinearLayoutManager(this);
+        recyclerviewTrailers.setLayoutManager(layoutManagerTrailers);
         recyclerviewTrailers.setHasFixedSize(true);
 
         trailerAdapter = new TrailerAdapter(this);
         recyclerviewTrailers.setAdapter(trailerAdapter);
 
         LoaderManager loaderManager = getSupportLoaderManager();
-        loaderManager.initLoader(TRAILERS_LOADER_ID, null, this);
+
+        // Trailers
+        LoaderManager.LoaderCallbacks<Trailer[]> trailersTask = new LoaderManager.LoaderCallbacks<Trailer[]>() {
+            @NonNull
+            @Override
+            public Loader<Trailer[]> onCreateLoader(int id, @Nullable Bundle args) {
+                return new AsyncTaskLoader<Trailer[]>(DetailActivity.this) {
+                    private Trailer[] trailers;
+
+                    @Override
+                    protected void onStartLoading() {
+                        super.onStartLoading();
+
+                        if (trailers != null) {
+                            deliverResult(trailers);
+                        } else {
+                            loadingIndicatorTrailers.setVisibility(View.VISIBLE);
+                            forceLoad();
+                        }
+                    }
+
+                    @Override
+                    public Trailer[] loadInBackground() {
+                        String id = movie.getId();
+                        if (id == null || TextUtils.isEmpty(id)) {
+                            return null;
+                        }
+
+                        try {
+                            URL trailersURL = NetworkUtils.buildTrailersUrl(id);
+                            String trailersJson = NetworkUtils.getResponseFromHttpUrl(trailersURL);
+                            trailers = JsonUtils.getTrailersFromJson(trailersJson);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+
+                        return trailers;
+                    }
+
+                    @Override
+                    public void deliverResult(Trailer[] data) {
+                        super.deliverResult(data);
+
+                        trailers = data;
+                    }
+                };
+            }
+
+            @Override
+            public void onLoadFinished(@NonNull Loader<Trailer[]> loader, Trailer[] data) {
+                loadingIndicatorTrailers.setVisibility(View.INVISIBLE);
+                trailerAdapter.setTrailersData(data);
+
+                if (null == data) {
+                    showTrailersErrorMessage();
+                } else {
+                    showTrailersDataView();
+                }
+            }
+
+            @Override
+            public void onLoaderReset(@NonNull Loader<Trailer[]> loader) {
+
+            }
+        };
+
+        loaderManager.initLoader(TRAILERS_LOADER_ID, null, trailersTask);
+
+        // Reviews
+        LinearLayoutManager layoutManagerReviews = new LinearLayoutManager(this);
+        recyclerviewReviews.setLayoutManager(layoutManagerReviews);
+        recyclerviewReviews.setHasFixedSize(true);
+
+        reviewAdapter = new ReviewAdapter(this);
+        recyclerviewReviews.setAdapter(reviewAdapter);
+
+        LoaderManager.LoaderCallbacks<Review[]> reviewsTask = new LoaderManager.LoaderCallbacks<Review[]>() {
+            @NonNull
+            @Override
+            public Loader<Review[]> onCreateLoader(int id, @Nullable Bundle args) {
+                return new AsyncTaskLoader<Review[]>(DetailActivity.this) {
+                    private Review[] reviews;
+
+                    @Override
+                    protected void onStartLoading() {
+                        super.onStartLoading();
+
+                        if (reviews != null) {
+                            deliverResult(reviews);
+                        } else {
+                            loadingIndicatorReviews.setVisibility(View.VISIBLE);
+                            forceLoad();
+                        }
+                    }
+
+                    @Override
+                    public Review[] loadInBackground() {
+                        String id = movie.getId();
+                        if (id == null || TextUtils.isEmpty(id)) {
+                            return null;
+                        }
+
+                        try {
+                            URL reviewsURL = NetworkUtils.buildReviewsUrl(id);
+                            String reviewsJson = NetworkUtils.getResponseFromHttpUrl(reviewsURL);
+                            reviews = JsonUtils.getReviewsFromJson(reviewsJson);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+
+                        return reviews;
+                    }
+
+                    @Override
+                    public void deliverResult(Review[] data) {
+                        super.deliverResult(data);
+
+                        reviews = data;
+                    }
+                };
+            }
+
+            @Override
+            public void onLoadFinished(@NonNull Loader<Review[]> loader, Review[] data) {
+                loadingIndicatorReviews.setVisibility(View.INVISIBLE);
+                reviewAdapter.setReviewsData(data);
+
+                if (null == data) {
+                    showTrailersErrorMessage();
+                } else {
+                    showTrailersDataView();
+                }
+            }
+
+            @Override
+            public void onLoaderReset(@NonNull Loader<Review[]> loader) {
+
+            }
+        };
+
+        loaderManager.initLoader(REVIEWS_LOADER_ID, null, reviewsTask);
     }
 
     @Override
@@ -106,63 +257,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         return super.onOptionsItemSelected(item);
     }
 
-    @NonNull
-    @Override
-    public Loader<Trailer[]> onCreateLoader(int id, @Nullable Bundle args) {
-        return new AsyncTaskLoader<Trailer[]>(this) {
-            private Trailer[] trailers;
-
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-
-                if (trailers != null) {
-                    deliverResult(trailers);
-                } else {
-                    loadingIndicatorTrailers.setVisibility(View.VISIBLE);
-                    forceLoad();
-                }
-            }
-
-            @Override
-            public Trailer[] loadInBackground() {
-                String id = movie.getId();
-                if (id == null || TextUtils.isEmpty(id)) {
-                    return null;
-                }
-
-                try {
-                    URL trailersURL = NetworkUtils.buildTrailersUrl(id);
-                    String trailersJson = NetworkUtils.getResponseFromHttpUrl(trailersURL);
-                    trailers = JsonUtils.getTrailersFromJson(trailersJson);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-
-                return trailers;
-            }
-
-            @Override
-            public void deliverResult(Trailer[] data) {
-                super.deliverResult(data);
-
-                trailers = data;
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<Trailer[]> loader, Trailer[] data) {
-        loadingIndicatorTrailers.setVisibility(View.INVISIBLE);
-        trailerAdapter.setTrailersData(data);
-
-        if (null == data) {
-            showTrailersErrorMessage();
-        } else {
-            showTrailersDataView();
-        }
-    }
 
     private void showTrailersDataView() {
         loadingErrorMessageTrailers.setVisibility(View.INVISIBLE);
@@ -172,11 +266,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     private void showTrailersErrorMessage() {
         recyclerviewTrailers.setVisibility(View.INVISIBLE);
         loadingErrorMessageTrailers.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<Trailer[]> loader) {
-
     }
 
     @Override
@@ -191,5 +280,14 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         startActivity(intent);
+    }
+
+    @Override
+    public void onClick(Review review) {
+        Uri reviewUri = Uri.parse(review.getUrl());
+        Intent intent = new Intent(Intent.ACTION_VIEW, reviewUri);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 }

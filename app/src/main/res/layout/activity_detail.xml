@@ -1,114 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/activity_vertical_margin"
-    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-    android:layout_marginStart="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/activity_vertical_margin"
-    tools:context="com.chelipinedaferrer.popularmovies.ui.DetailActivity">
+    android:layout_height="match_parent">
 
-    <android.support.constraint.Barrier
-        android:id="@+id/vertical_barrier"
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="movie_poster_thumbnail,vote_average"
-        tools:ignore="MissingConstraints" />
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        tools:context="com.chelipinedaferrer.popularmovies.ui.DetailActivity">
 
-    <ImageView
-        android:id="@+id/movie_poster_thumbnail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/movie_poster_picture_description"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <android.support.constraint.Barrier
+            android:id="@+id/vertical_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="movie_poster_thumbnail,vote_average"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/original_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/textview_margin"
-        android:textSize="@dimen/textview_title_textSize"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/movie_poster_thumbnail"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Coco" />
+        <ImageView
+            android:id="@+id/movie_poster_thumbnail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/movie_poster_picture_description"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/release_date"
-        style="@style/detailTextView"
-        android:textSize="@dimen/textview_textSize"
-        app:layout_constraintStart_toStartOf="@id/original_title"
-        app:layout_constraintTop_toBottomOf="@id/original_title"
-        tools:text="2018-01-01" />
+        <TextView
+            android:id="@+id/original_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/textview_margin"
+            android:textSize="@dimen/textview_title_textSize"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/movie_poster_thumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Coco" />
 
-    <TextView
-        android:id="@+id/vote_average"
-        style="@style/detailTextView"
-        android:textSize="@dimen/textview_vote_average_textSize"
-        app:layout_constraintStart_toStartOf="@id/release_date"
-        app:layout_constraintTop_toBottomOf="@id/release_date"
-        tools:text="4.6" />
+        <TextView
+            android:id="@+id/release_date"
+            style="@style/detailTextView"
+            android:textSize="@dimen/textview_textSize"
+            app:layout_constraintStart_toStartOf="@id/original_title"
+            app:layout_constraintTop_toBottomOf="@id/original_title"
+            tools:text="2018-01-01" />
 
-    <ScrollView
-        android:id="@+id/scrollview_overview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@id/framelayout_trailers"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/vertical_barrier">
+        <TextView
+            android:id="@+id/vote_average"
+            style="@style/detailTextView"
+            android:textSize="@dimen/textview_vote_average_textSize"
+            app:layout_constraintStart_toStartOf="@id/release_date"
+            app:layout_constraintTop_toBottomOf="@id/release_date"
+            tools:text="4.6" />
 
         <TextView
             android:id="@+id/overview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/textview_margin"
             android:textSize="@dimen/textview_textSize"
+            app:layout_constraintBottom_toTopOf="@id/framelayout_trailers"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/vertical_barrier"
+            app:layout_constraintVertical_chainStyle="spread"
             tools:text="Once upon a time..." />
 
-    </ScrollView>
-
-    <FrameLayout
-        android:id="@+id/framelayout_trailers"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scrollview_overview">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_trailers"
+        <FrameLayout
+            android:id="@+id/framelayout_trailers"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:padding="@dimen/image_padding" />
-
-        <TextView
-            android:id="@+id/loading_error_message_trailers"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/loading_error_message_trailers"
-            android:textSize="20sp"
-            android:visibility="invisible" />
+            app:layout_constraintBottom_toTopOf="@id/framelayout_reviews"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/overview">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_trailers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false" />
+
+            <TextView
+                android:id="@+id/loading_error_message_trailers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/textview_padding"
+                android:text="@string/loading_error_message_trailers"
+                android:textSize="20sp"
+                android:visibility="invisible" />
 
 
-        <ProgressBar
-            android:id="@+id/loading_indicator_trailers"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_gravity="center"
-            android:visibility="invisible" />
+            <ProgressBar
+                android:id="@+id/loading_indicator_trailers"
+                android:layout_width="@dimen/progressbar"
+                android:layout_height="@dimen/progressbar"
+                android:layout_gravity="center"
+                android:visibility="invisible" />
 
-    </FrameLayout>
+        </FrameLayout>
 
-</android.support.constraint.ConstraintLayout>
+        <FrameLayout
+            android:id="@+id/framelayout_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/framelayout_trailers">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_reviews"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:clipToPadding="false" />
+
+            <TextView
+                android:id="@+id/loading_error_message_reviews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/textview_padding"
+                android:text="@string/loading_error_message_trailers"
+                android:textSize="20sp"
+                android:visibility="invisible" />
+
+
+            <ProgressBar
+                android:id="@+id/loading_indicator_reviews"
+                android:layout_width="@dimen/progressbar"
+                android:layout_height="@dimen/progressbar"
+                android:layout_gravity="center"
+                android:visibility="invisible" />
+
+        </FrameLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>
