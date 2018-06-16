@@ -1,6 +1,7 @@
-package com.chelipinedaferrer.popularmovies.ui;
+package com.chelipinedaferrer.popularmovies.ui.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     }
 
     @Override
-    public TrailerAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public TrailerAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.trailer_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -42,7 +43,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     }
 
     @Override
-    public void onBindViewHolder(TrailerAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TrailerAdapterViewHolder holder, int position) {
         Trailer trailer = trailersData[position];
 
         holder.trailerName.setText(trailer.getName());

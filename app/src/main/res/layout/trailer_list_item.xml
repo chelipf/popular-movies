@@ -14,7 +14,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="@string/play_trailer_description"
         android:scaleType="centerCrop"
-        android:src="@drawable/play_arrow"
+        android:src="@drawable/ic_play_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -1,7 +1,12 @@
 package com.chelipinedaferrer.popularmovies.entities;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
+
+import com.chelipinedaferrer.popularmovies.data.MovieContract;
 
 import java.util.Date;
 
@@ -53,6 +58,22 @@ public class Movie implements Parcelable {
 
     public Date getReleaseDate() {
         return releaseDate;
+    }
+
+    public boolean isFavorite(Context context) {
+        boolean isFavorite = false;
+
+        if (TextUtils.isEmpty(id)) {
+            return false;
+        }
+
+        Cursor cursor = context.getContentResolver().query(MovieContract.MovieEntry.buildMovieUriWithApiId(id), null, null, null, null);
+
+        if (cursor != null) {
+            isFavorite = cursor.moveToFirst();
+            cursor.close();
+        }
+        return isFavorite;
     }
 
     @Override

@@ -1,6 +1,7 @@
-package com.chelipinedaferrer.popularmovies.ui;
+package com.chelipinedaferrer.popularmovies.ui.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     }
 
     @Override
-    public ReviewAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public ReviewAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.review_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -41,7 +42,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     }
 
     @Override
-    public void onBindViewHolder(ReviewAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ReviewAdapterViewHolder holder, int position) {
         Review review = reviewsData[position];
 
         holder.reviewAuthor.setText(review.getAuthor());

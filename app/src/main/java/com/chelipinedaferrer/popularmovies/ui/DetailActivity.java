@@ -1,10 +1,13 @@
 package com.chelipinedaferrer.popularmovies.ui;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.AsyncTaskLoader;
@@ -19,23 +22,29 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chelipinedaferrer.popularmovies.R;
+import com.chelipinedaferrer.popularmovies.data.MovieContract;
 import com.chelipinedaferrer.popularmovies.entities.Movie;
 import com.chelipinedaferrer.popularmovies.entities.Review;
 import com.chelipinedaferrer.popularmovies.entities.Trailer;
 import com.chelipinedaferrer.popularmovies.lib.ImageLoader;
 import com.chelipinedaferrer.popularmovies.lib.PicassoImageLoader;
+import com.chelipinedaferrer.popularmovies.ui.adapters.ReviewAdapter;
+import com.chelipinedaferrer.popularmovies.ui.adapters.TrailerAdapter;
 import com.chelipinedaferrer.popularmovies.utilities.DateUtils;
 import com.chelipinedaferrer.popularmovies.utilities.JsonUtils;
 import com.chelipinedaferrer.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.chelipinedaferrer.popularmovies.ui.MainActivity.EXTRA_MOVIE;
+import static com.chelipinedaferrer.popularmovies.ui.fragments.MoviesFragment.EXTRA_MOVIE;
 
 public class DetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerAdapterOnClickHandler, ReviewAdapter.ReviewAdapterOnClickHandler {
     @BindView(R.id.movie_poster_thumbnail)
@@ -60,6 +69,8 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     TextView loadingErrorMessageReviews;
     @BindView(R.id.loading_indicator_reviews)
     ProgressBar loadingIndicatorReviews;
+    @BindView(R.id.add_favorite_fab)
+    FloatingActionButton favoriteFab;
 
     private static final int TRAILERS_LOADER_ID = 12;
     private static final int REVIEWS_LOADER_ID = 13;
@@ -67,6 +78,8 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     private Movie movie;
     private TrailerAdapter trailerAdapter;
     private ReviewAdapter reviewAdapter;
+
+    private boolean isFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +99,9 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
                 releaseDate.setText(DateUtils.formatLocaleDate(movie.getReleaseDate()));
                 voteAverage.setText(String.valueOf(movie.getVoteAverage()));
                 overview.setText(movie.getOverview());
+
+                isFavorite = movie.isFavorite(this);
+                setfavoriteFabColor();
             }
         }
 
@@ -288,6 +304,53 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         Intent intent = new Intent(Intent.ACTION_VIEW, reviewUri);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
+        }
+    }
+
+    public void addFavorite(View view) {
+        if (isFavorite) {
+            int moviesDeleted = deleteFavoriteMovie();
+
+            if (moviesDeleted != 0) {
+                isFavorite = false;
+                setfavoriteFabColor();
+                Toast.makeText(getBaseContext(), getString(R.string.favorite_movie_removed), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Uri uri = insertFavoriteMovie();
+
+            if (uri != null) {
+                isFavorite = true;
+                setfavoriteFabColor();
+                Toast.makeText(getBaseContext(), getString(R.string.favorite_movie_added), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private Uri insertFavoriteMovie() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieContract.MovieEntry.COLUMN_ID, movie.getId());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE, movie.getOriginalTitle());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, movie.getOverview());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String releaseDate = formatter.format(movie.getReleaseDate());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, releaseDate);
+
+        return getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+    }
+
+    private int deleteFavoriteMovie() {
+        return getContentResolver().delete(MovieContract.MovieEntry.buildMovieUriWithApiId(movie.getId()), null, null);
+    }
+
+    private void setfavoriteFabColor() {
+        if (isFavorite) {
+            favoriteFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.favorite)));
+        } else {
+            favoriteFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.notFavorite)));
         }
     }
 }
