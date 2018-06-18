@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -41,9 +42,12 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
     public static final String EXTRA_MOVIE = "com.chelipinedaferrer.popularmovies.extra_movie";
     public static final int FAVORITES_LOADER_ID = 12;
+    private static final String RECYCLERVIEW_DATA = "recyclerview_data";
+    private static final String RECYCLERVIEW_STATE = "recyclerview_position";
 
     private MovieAdapter movieAdapter;
     private Context context;
+    private Movie[] mMovies;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,8 +77,27 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         movieAdapter = new MovieAdapter(this);
         recyclerviewMovies.setAdapter(movieAdapter);
 
-        LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(FAVORITES_LOADER_ID, null, this);
+        if (savedInstanceState != null && savedInstanceState.containsKey(RECYCLERVIEW_DATA)) {
+            Movie[] data = (Movie[]) savedInstanceState.getParcelableArray(RECYCLERVIEW_DATA);
+            movieAdapter.setMoviesData(data);
+            mMovies = data;
+        } else {
+            LoaderManager loaderManager = getLoaderManager();
+            loaderManager.initLoader(FAVORITES_LOADER_ID, null, this);
+        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(RECYCLERVIEW_STATE)) {
+            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(RECYCLERVIEW_STATE);
+            recyclerviewMovies.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArray(RECYCLERVIEW_DATA, mMovies);
+        outState.putParcelable(RECYCLERVIEW_STATE, recyclerviewMovies.getLayoutManager().onSaveInstanceState());
     }
 
     @Override
@@ -141,6 +164,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     public void onLoadFinished(@NonNull Loader<Movie[]> loader, Movie[] data) {
         loadingIndicator.setVisibility(View.INVISIBLE);
         movieAdapter.setMoviesData(data);
+        mMovies = data;
 
         if (null == data) {
             showErrorMessage();

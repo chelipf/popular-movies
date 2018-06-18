@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
+    private static final String IS_FRAGMENT_SET = "is_fragment_set";
+    private boolean isFragmentSet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,10 +52,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        if (savedInstanceState != null && savedInstanceState.containsKey(IS_FRAGMENT_SET)) {
+            isFragmentSet = savedInstanceState.getBoolean(IS_FRAGMENT_SET);
+        } else {
+            isFragmentSet = getSupportFragmentManager().findFragmentById(R.id.frame_layout) != null;
+        }
+
         //Manually displaying the first fragment - one time only
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame_layout, new MoviesFragment());
-        transaction.commit();
+        if (!isFragmentSet) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_layout, new MoviesFragment());
+            transaction.commit();
+
+            isFragmentSet = true;
+        }
     }
 
     @Override
@@ -61,6 +74,13 @@ public class MainActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.main, menu);
 
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(IS_FRAGMENT_SET, isFragmentSet);
     }
 
     @Override

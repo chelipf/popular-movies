@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -45,11 +46,14 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
     public static final String EXTRA_MOVIE = "com.chelipinedaferrer.popularmovies.extra_movie";
     private static final int MOVIES_LOADER_ID = 11;
+    private static final String RECYCLERVIEW_DATA = "recyclerview_data";
+    private static final String RECYCLERVIEW_STATE = "recyclerview_position";
 
     private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
 
     private MovieAdapter movieAdapter;
     private Context context;
+    private Movie[] mMovies;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,8 +85,27 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         movieAdapter = new MovieAdapter(this);
         recyclerviewMovies.setAdapter(movieAdapter);
 
-        LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(MOVIES_LOADER_ID, null, this);
+        if (savedInstanceState != null && savedInstanceState.containsKey(RECYCLERVIEW_DATA)) {
+            Movie[] data = (Movie[]) savedInstanceState.getParcelableArray(RECYCLERVIEW_DATA);
+            movieAdapter.setMoviesData(data);
+            mMovies = data;
+        } else {
+            LoaderManager loaderManager = getLoaderManager();
+            loaderManager.initLoader(MOVIES_LOADER_ID, null, this);
+        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(RECYCLERVIEW_STATE)) {
+            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(RECYCLERVIEW_STATE);
+            recyclerviewMovies.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArray(RECYCLERVIEW_DATA, mMovies);
+        outState.putParcelable(RECYCLERVIEW_STATE, recyclerviewMovies.getLayoutManager().onSaveInstanceState());
     }
 
     @Override
@@ -151,6 +174,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     public void onLoadFinished(@NonNull Loader<Movie[]> loader, Movie[] data) {
         loadingIndicator.setVisibility(View.INVISIBLE);
         movieAdapter.setMoviesData(data);
+        mMovies = data;
 
         if (null == data) {
             showErrorMessage();

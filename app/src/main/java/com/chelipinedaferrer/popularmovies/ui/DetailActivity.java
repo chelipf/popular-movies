@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,8 @@ import butterknife.ButterKnife;
 import static com.chelipinedaferrer.popularmovies.ui.fragments.MoviesFragment.EXTRA_MOVIE;
 
 public class DetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerAdapterOnClickHandler, ReviewAdapter.ReviewAdapterOnClickHandler {
+    @BindView(R.id.detail_scrollview)
+    ScrollView scrollView;
     @BindView(R.id.movie_poster_thumbnail)
     ImageView moviePosterThumbnail;
     @BindView(R.id.original_title)
@@ -74,6 +77,8 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
     private static final int TRAILERS_LOADER_ID = 12;
     private static final int REVIEWS_LOADER_ID = 13;
+    private static final String IS_FAVORITE = "is_favorite";
+    private static final String SCROLLVIEW_POSITION = "scrollview_position";
 
     private Movie movie;
     private TrailerAdapter trailerAdapter;
@@ -99,11 +104,20 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
                 releaseDate.setText(DateUtils.formatLocaleDate(movie.getReleaseDate()));
                 voteAverage.setText(String.valueOf(movie.getVoteAverage()));
                 overview.setText(movie.getOverview());
-
-                isFavorite = movie.isFavorite(this);
-                setfavoriteFabColor();
             }
         }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(IS_FAVORITE)) {
+            isFavorite = savedInstanceState.getBoolean(IS_FAVORITE);
+        } else if (movie != null) {
+            isFavorite = movie.isFavorite(this);
+        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(SCROLLVIEW_POSITION)) {
+            scrollView.setScrollY(savedInstanceState.getInt(SCROLLVIEW_POSITION));
+        }
+
+        setfavoriteFabColor();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -325,6 +339,16 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
                 Toast.makeText(getBaseContext(), getString(R.string.favorite_movie_added), Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(IS_FAVORITE, isFavorite);
+
+        int scrollviewPosition = scrollView.getScrollY();
+        outState.putInt(SCROLLVIEW_POSITION, scrollviewPosition);
     }
 
     private Uri insertFavoriteMovie() {
